@@ -19,11 +19,32 @@ window.addEventListener("DOMContentLoaded", () => {
       let square = document.getElementById(`${event.target.id}`);
       square.removeEventListener("click", play);
       turn = false;
+      xTurnNo++;
     } else {
       event.target.innerText = "O";
       let square = document.getElementById(`${event.target.id}`);
       square.removeEventListener("click", play);
       turn = true;
+      oTurnNo++;
+    }
+
+    if (xTurnNo >= 3 && !turn) {
+      if (isVictory(cells)) {
+        winnerBanner.innerText = " Winner : X ";
+
+        cells.forEach((cell) => {
+          cell.removeEventListener("click", play);
+        });
+      }
+    } else if (oTurnNo >= 3 && turn) {
+      if (isVictory(cells)) {
+        winnerBanner.innerText = " Winner : O ";
+        cells.forEach((cell) => {
+          cell.removeEventListener("click", play);
+        });
+      } else if (oTurnNo + xTurnNo == 8) {
+        winnerBanner.innerText = " DRAW ";
+      }
     }
   } //activates the blue circle effect. changes the turn, and implements the X | O imprint in each cell depending on turn
 
@@ -44,7 +65,33 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function isVictory(cells) {
+    let combs = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let comb of combs) {
+      if (
+        cells[comb[0]].textContent == cells[comb[1]].textContent &&
+        cells[comb[1]].textContent == cells[comb[2]].textContent &&
+        cells[comb[0]].textContent != ""
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   //EVENT LISTENERS
+  console.log(cells);
   cells.forEach((cell) => {
     cell.addEventListener("click", play);
   });
